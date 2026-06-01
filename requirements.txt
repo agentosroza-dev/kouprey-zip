@@ -1,0 +1,7 @@
+PyQt6>=6.5
+PyQt6-sip>=13.5
+python-dotenv>=1.0
+py7zr>=0.20
+patool>=2.0
+rarfile>=4.0
+cryptography>=41.0
