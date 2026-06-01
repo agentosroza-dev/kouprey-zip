@@ -273,9 +273,13 @@ QLabel#subtitleLabel {{
     font-size: 11pt;
     color: {c.text_secondary};
 }}
-QLabel#captionLabel {{
+QLabel#captionLabel, QPushButton#captionLabel {{
     font-size: 9pt;
     color: {c.text_tertiary};
+    border: none;
+    background: transparent;
+    padding: 0;
+    text-align: left;
 }}
 
 QLabel#appLogo {{

@@ -124,5 +124,9 @@
   "format_bzip2": "BZip2 Archive",
   "format_xz": "XZ Archive",
   "format_zstd": "Zstandard Archive",
-  "format_iso": "ISO Disk Image"
+  "format_iso": "ISO Disk Image",
+
+  "save_preset": "Save Preset",
+  "preset_saved": "Extraction preset saved.",
+  "save_complete": "Archive saved."
 }

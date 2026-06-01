@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout, QWidget,
 )
 
+from app_config import load_config, save_config
 from core.archive import Archive
 from core.extractor import ExtractResult, Extractor
 from core.language import LanguageManager
@@ -80,10 +81,17 @@ class ExtractPage(QWidget):
         self._progress_bar.setVisible(False)
         layout.addWidget(self._progress_bar)
 
+        btn_row = QHBoxLayout()
+        self._save_preset_btn = QPushButton()
+        self._save_preset_btn.clicked.connect(self._save_preset)
+        btn_row.addWidget(self._save_preset_btn)
+        btn_row.addStretch()
         self._extract_btn = QPushButton()
         self._extract_btn.setObjectName("accentButton")
         self._extract_btn.clicked.connect(self._do_extract)
-        layout.addWidget(self._extract_btn, 0, Qt.AlignmentFlag.AlignRight)
+        btn_row.addWidget(self._extract_btn)
+        layout.addLayout(btn_row)
+        self._load_preset()
 
     def populate_toolbar(self, toolbar: QToolBar):
         pass
@@ -174,7 +182,37 @@ class ExtractPage(QWidget):
                 self, self._lang.tr("error", "Error"), res.message,
             )
 
+    def _save_preset(self):
+        src = self._source_path.text().strip()
+        dest = self._dest_path.text().strip()
+        if not src:
+            QMessageBox.warning(
+                self, self._lang.tr("warning", "Warning"),
+                self._lang.tr("select_source", "Please select a source archive."),
+            )
+            return
+        config = load_config()
+        config["extraction_preset"] = {"source": src, "dest": dest}
+        save_config(config)
+        QMessageBox.information(
+            self, self._lang.tr("success", "Success"),
+            self._lang.tr("preset_saved", "Extraction preset saved."),
+        )
+
+    def _load_preset(self):
+        config = load_config()
+        preset = config.get("extraction_preset")
+        if preset:
+            src = preset.get("source", "")
+            dest = preset.get("dest", "")
+            if src and os.path.isfile(src):
+                self._source_path.setText(src)
+                self._update_archive_info()
+            if dest:
+                self._dest_path.setText(dest)
+
     def retranslate(self):
+        self._save_preset_btn.setText(self._lang.tr("save_preset", "Save Preset"))
         self._src_label.setText(self._lang.tr("source_archive", "Source Archive"))
         self._dest_label.setText(self._lang.tr("destination", "Destination"))
         self._browse_src_btn.setText(self._lang.tr("browse", "Browse..."))

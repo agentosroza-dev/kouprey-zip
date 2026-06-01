@@ -340,6 +340,22 @@ class MainWindow(QMainWindow):
             if hasattr(page, "retranslate"):
                 page.retranslate()
 
+        current = self._stack.currentWidget()
+        page_titles = {
+            "archive_page": "page_archive_title",
+            "compress_page": "page_compress_title",
+            "encrypt_page": "page_encrypt_title",
+            "settings_page": "page_settings_title",
+        }
+        for key, widget in self._pages.items():
+            if widget is current:
+                title_key = page_titles.get(key, "")
+                self._page_title.setText(self._lang.tr(title_key, ""))
+                break
+        self._command_bar.clear()
+        if current and hasattr(current, "populate_toolbar"):
+            current.populate_toolbar(self._command_bar)
+
         self._status_bar.showMessage(self._lang.tr("ready", "Ready"))
 
     def _show_about(self):

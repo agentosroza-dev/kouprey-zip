@@ -171,6 +171,7 @@ class ArchivePage(QWidget):
         layout.setSpacing(12)
 
         empty_state = QFrame()
+        empty_state.setAcceptDrops(False)
         empty_state.setObjectName("card")
         empty_layout = QVBoxLayout(empty_state)
         empty_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -191,11 +192,13 @@ class ArchivePage(QWidget):
         self._empty_state = empty_state
 
         content_area = QWidget()
+        content_area.setAcceptDrops(False)
         content_layout = QVBoxLayout(content_area)
         content_layout.setContentsMargins(0, 0, 0, 0)
         content_layout.setSpacing(12)
 
         info_bar = QFrame()
+        info_bar.setAcceptDrops(False)
         info_bar.setObjectName("infoBar")
         info_layout = QHBoxLayout(info_bar)
         info_layout.setContentsMargins(16, 12, 16, 12)
@@ -204,24 +207,26 @@ class ArchivePage(QWidget):
         info_layout.addWidget(self._info_icon)
         self._info_label = QLabel()
         info_layout.addWidget(self._info_label)
+        info_layout.addStretch()
+        self._path_label = QPushButton()
+        self._path_label.setObjectName("captionLabel")
+        self._path_label.setFlat(True)
+        self._path_label.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._path_label.clicked.connect(self._navigate_up)
+        info_layout.addWidget(self._path_label)
         content_layout.addWidget(info_bar)
         self._info_bar = info_bar
 
-        self._path_bar = QFrame()
-        self._path_bar.setObjectName("infoBar")
-        path_layout = QHBoxLayout(self._path_bar)
-        path_layout.setContentsMargins(16, 8, 16, 8)
-        self._path_label = QLabel()
-        self._path_label.setObjectName("captionLabel")
-        path_layout.addWidget(self._path_label)
-        content_layout.addWidget(self._path_bar)
+        table_frame = QFrame()
 
         table_frame = QFrame()
+        table_frame.setAcceptDrops(False)
         table_frame.setObjectName("card")
         table_layout = QVBoxLayout(table_frame)
         table_layout.setContentsMargins(0, 0, 0, 0)
 
         self._table = QTableWidget(0, 4)
+        self._table.setAcceptDrops(False)
         self._table.setAlternatingRowColors(True)
         self._table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self._table.setSelectionBehavior(
@@ -262,12 +267,23 @@ class ArchivePage(QWidget):
             event.acceptProposedAction()
 
     def dropEvent(self, event: QDropEvent):
+        paths = []
         for url in event.mimeData().urls():
             path = url.toLocalFile()
-            if path and os.path.isfile(path):
-                self._load_archive(path)
-                if self._current_archive:
-                    break
+            if path and os.path.exists(path):
+                paths.append(path)
+        if not paths:
+            return
+        event.acceptProposedAction()
+        if self._current_archive:
+            self._add_to_archive(paths)
+        else:
+            for path in paths:
+                if os.path.isfile(path):
+                    self._load_archive(path)
+                    if self._current_archive:
+                        break
+            self._refresh_table()
 
     def _load_archive(self, path: str):
         try:
@@ -298,7 +314,7 @@ class ArchivePage(QWidget):
         self._content_area.setVisible(has_archive)
         self._add_files_btn.setVisible(has_archive)
         self._add_folder_btn.setVisible(has_archive)
-        self._path_bar.setVisible(has_archive)
+        self._info_bar.setVisible(has_archive)
 
     def populate_toolbar(self, toolbar: QToolBar):
         open_action = toolbar.addAction(lucide_icon("folder-open", 18), "")
@@ -357,11 +373,13 @@ class ArchivePage(QWidget):
         return name.rstrip("/")
 
     def _update_path_label(self):
-        path = self._current_prefix or "/"
-        if not path.endswith("/"):
-            path += "/"
+        if self._current_prefix:
+            parts = [p for p in self._current_prefix.split("/") if p]
+            current = parts[-1] if parts else "/"
+        else:
+            current = "/"
         self._path_label.setText(
-            f"{os.path.basename(self._current_archive.path)}  ▸  {path}"
+            f"▸  {current}"
         )
 
     def _refresh_table(self):
@@ -675,7 +693,7 @@ class ArchivePage(QWidget):
                     self._lang.tr("archive_empty", "The archive would be empty. Deletion cancelled."),
                 )
                 return
-            new_path = archive_path + ".tmp"
+            new_path = os.path.join(os.path.dirname(archive_path), ".tmp_" + os.path.basename(archive_path))
             compressor = Compressor(new_path, remaining, password)
             cres = compressor.compress()
             if not cres.success:
@@ -783,7 +801,7 @@ class ArchivePage(QWidget):
                 elif os.path.isdir(src):
                     dest = os.path.join(temp_dir, os.path.basename(src))
                     shutil.copytree(src, dest, dirs_exist_ok=True)
-            new_path = archive_path + ".tmp"
+            new_path = os.path.join(os.path.dirname(archive_path), ".tmp_" + os.path.basename(archive_path))
             remaining = []
             for root, _, files in os.walk(temp_dir):
                 for f in files:
@@ -826,3 +844,5 @@ class ArchivePage(QWidget):
         if self._current_archive:
             self._update_info()
             self._refresh_table()
+            self._update_path_label()
+        self.update()

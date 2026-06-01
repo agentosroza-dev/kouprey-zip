@@ -124,5 +124,9 @@
   "format_bzip2": "BZip2 Archive",
   "format_xz": "XZ Archive",
   "format_zstd": "Zstandard Archive",
-  "format_iso": "ISO Disk Image"
+  "format_iso": "ISO Disk Image",
+
+  "save_preset": "រក្សាទុក Preset",
+  "preset_saved": "Preset ទាញយកត្រូវបានរក្សាទុក។",
+  "save_complete": "Archive ត្រូវបានរក្សាទុក។"
 }
