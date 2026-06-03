@@ -1,7 +1,7 @@
 import os
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import QDialog, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
 
 from core.language import LanguageManager
@@ -25,6 +25,9 @@ class AboutDialog(QDialog):
     def _setup_ui(self):
         self.setWindowTitle(self._lang.tr("about_title", "About Kouprey-Zip"))
         self.setFixedSize(480, 360)
+        _icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "app.ico")
+        if os.path.isfile(_icon_path):
+            self.setWindowIcon(QIcon(_icon_path))
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(32, 28, 32, 20)

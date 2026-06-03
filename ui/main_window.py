@@ -1,7 +1,7 @@
 import os
 
 from PyQt6.QtCore import QSize, QTimer, Qt
-from PyQt6.QtGui import QAction, QFont
+from PyQt6.QtGui import QAction, QFont, QIcon
 from PyQt6.QtWidgets import (
     QApplication, QFrame, QHBoxLayout, QLabel, QMainWindow,
     QPushButton, QStackedWidget, QStatusBar, QToolBar,
@@ -88,6 +88,9 @@ class MainWindow(QMainWindow):
     def _setup_ui(self):
         self.setMinimumSize(900, 600)
         self.resize(1100, 720)
+        _icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "app.ico")
+        if os.path.isfile(_icon_path):
+            self.setWindowIcon(QIcon(_icon_path))
 
         central = QWidget()
         self.setCentralWidget(central)
