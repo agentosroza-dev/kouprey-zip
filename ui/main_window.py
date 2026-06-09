@@ -278,6 +278,10 @@ class MainWindow(QMainWindow):
         new_mode = "dark" if is_light else "light"
         self._theme.set_mode(new_mode)
         self._refresh_all_icons()
+        from app_config import load_config, save_config
+        config = load_config()
+        config["theme"] = new_mode
+        save_config(config)
 
     def _refresh_all_icons(self):
         for btn in self._nav_buttons:
@@ -306,6 +310,10 @@ class MainWindow(QMainWindow):
         self._lang.set_language(new_lang)
         self._apply_font()
         self._retranslate()
+        from app_config import load_config, save_config
+        config = load_config()
+        config["language"] = new_lang
+        save_config(config)
 
     def _apply_font(self):
         font = QFont()
