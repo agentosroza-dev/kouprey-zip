@@ -229,10 +229,12 @@ uninstall() {
     echo "  - MIME registration for .kpz files"
     echo "  - Icons in ~/.local/share/icons/hicolor/"
     echo ""
-    read -rp "Continue? [y/N] " confirm
-    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
-        info "Uninstall cancelled."
-        exit 0
+    if [ "${AUTO_YES:-0}" != "1" ] && [ -t 0 ]; then
+        read -rp "Continue? [y/N] " confirm
+        if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+            info "Uninstall cancelled."
+            exit 0
+        fi
     fi
 
     rm -f "$BIN_DIR/kouprey-zip"
@@ -313,8 +315,14 @@ main() {
     echo ""
 }
 
+AUTO_YES=0
+
 case "${1:-}" in
     --uninstall|-u)
+        shift
+        if [ "${1:-}" = "--yes" ] || [ "${1:-}" = "-y" ]; then
+            AUTO_YES=1
+        fi
         uninstall
         ;;
     *)

@@ -39,7 +39,7 @@ curl -fsSL https://raw.githubusercontent.com/agentosroza-dev/kouprey-zip/main-li
 
 To uninstall:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/agentosroza-dev/kouprey-zip/main-linux/install.sh | bash -s -- --uninstall
+curl -fsSL https://raw.githubusercontent.com/agentosroza-dev/kouprey-zip/main-linux/install.sh | bash -s -- --uninstall -y
 ```
 
 The installer downloads the pre-built binary from the latest GitHub release. If no
