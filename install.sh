@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="agentosroza-dev/kouprey-zip-linux"
+REPO="agentosroza-dev/kouprey-zip"
+REPO_BRANCH="main-linux"
 REPO_URL="https://github.com/$REPO.git"
+BRANCH_FLAG="--branch $REPO_BRANCH"
 INSTALL_DIR="${HOME}/.local/share/kouprey-zip"
 BIN_DIR="${HOME}/.local/bin"
 APPLICATIONS_DIR="${HOME}/.local/share/applications"
@@ -66,7 +68,7 @@ install_from_source() {
         git -C "$INSTALL_DIR" pull --rebase
     else
         info "Cloning repository to $INSTALL_DIR"
-        git clone "$REPO_URL" "$INSTALL_DIR"
+        git clone "$REPO_URL" $BRANCH_FLAG "$INSTALL_DIR"
     fi
 
     if [ ! -d "$INSTALL_DIR/venv" ]; then
@@ -174,8 +176,8 @@ MIME
 install_icons() {
     local icon_src
 
-    for candidate in "$INSTALL_DIR/assets/icons/output-smallpngtools.png" \
-                     "$INSTALL_DIR/output-smallpngtools.png"; do
+    for candidate in "$INSTALL_DIR/assets/icons/Kouprey Logo Variations.png" \
+                     "$INSTALL_DIR/assets/icons/Kouprey Logo Variations white.png"; do
         if [ -f "$candidate" ]; then
             icon_src="$candidate"
             break
@@ -284,13 +286,13 @@ main() {
             else
                 rm -rf "$tmpdir"
                 warn "Could not fetch release — updating from source instead."
-                git -C "$INSTALL_DIR" pull --rebase 2>/dev/null || true
+                git -C "$INSTALL_DIR" pull --rebase 2>/dev/null || git -C "$INSTALL_DIR" fetch origin "$REPO_BRANCH" && git -C "$INSTALL_DIR" reset --hard "origin/$REPO_BRANCH" 2>/dev/null || true
                 "$INSTALL_DIR/venv/bin/pip" install --quiet -r "$INSTALL_DIR/requirements.txt" 2>/dev/null || true
             fi
         else
             # Previously installed from source; update from source
             info "Updating from source..."
-            git -C "$INSTALL_DIR" pull --rebase 2>/dev/null || true
+            git -C "$INSTALL_DIR" pull --rebase 2>/dev/null || git -C "$INSTALL_DIR" fetch origin "$REPO_BRANCH" && git -C "$INSTALL_DIR" reset --hard "origin/$REPO_BRANCH" 2>/dev/null || true
             "$INSTALL_DIR/venv/bin/pip" install --quiet -r "$INSTALL_DIR/requirements.txt" 2>/dev/null || true
         fi
     else

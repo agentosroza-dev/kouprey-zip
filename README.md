@@ -34,25 +34,17 @@ A modern file archiver with a WinUI 3-inspired design. Built with Python and PyQ
 ### Linux — one-line installer (no root required)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/agentosroza-dev/kouprey-zip-linux/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/agentosroza-dev/kouprey-zip/main-linux/install.sh | bash
 ```
 
 To uninstall:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/agentosroza-dev/kouprey-zip-linux/main/install.sh | bash -s -- --uninstall
+curl -fsSL https://raw.githubusercontent.com/agentosroza-dev/kouprey-zip/main-linux/install.sh | bash -s -- --uninstall
 ```
 
-> **Status:** `install.sh` is currently non-functional — the release repository
-> (`agentosroza-dev/kouprey-zip-linux`) does not exist yet. For now, run from source:
-> ```bash
-> git clone https://github.com/agentosroza-dev/kouprey-zip.git
-> cd kouprey-zip
-> python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-> .venv/bin/python main.py
-> ```
-
-The installer will download the pre-built binary from the latest GitHub release. If no
-release is available for your architecture, it falls back to installation from source.
+The installer downloads the pre-built binary from the latest GitHub release. If no
+release is available for your architecture, it falls back to cloning from the
+`main-linux` branch and installing from source into a Python virtual environment.
 
 | Step | Destination |
 |------|-------------|
@@ -83,10 +75,10 @@ release is available for your architecture, it falls back to installation from s
 - Python 3.12+
 
 ```powershell
-git clone https://github.com/agentosroza-dev/kouprey-zip-linux.git
-cd kouprey-zip-linux
-pip install -r requirements.txt
-python main.py
+git clone https://github.com/agentosroza-dev/kouprey-zip.git --branch main-linux
+cd kouprey-zip
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python main.py
 ```
 
 ### Windows — build executable
@@ -127,6 +119,8 @@ kouprey-zip/
 ├── main.py                  # Entry point, CLI, IPC
 ├── app_config.py            # Settings load/save
 ├── install.sh               # Linux curl installer (no root)
+├── build.sh                 # Linux PyInstaller build script
+├── kouprey-zip              # Development launcher (auto-detects .venv)
 ├── installer/
 │   └── kouprey-zip.desktop  # Linux desktop entry
 ├── core/                    # Backend
