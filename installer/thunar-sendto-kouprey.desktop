@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Archive with Kouprey
+Comment=Compress selected files with Kouprey-Zip
+Exec=kouprey-zip --compress %F
+Icon=kouprey-zip
+Terminal=false
+Categories=Archiving;Compression;
+MimeType=inode/directory;

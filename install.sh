@@ -8,6 +8,7 @@ BRANCH_FLAG="--branch $REPO_BRANCH"
 INSTALL_DIR="${HOME}/.local/share/kouprey-zip"
 BIN_DIR="${HOME}/.local/bin"
 APPLICATIONS_DIR="${HOME}/.local/share/applications"
+THUNAR_SENDTO_DIR="${HOME}/.local/share/Thunar/sendto"
 MIME_DIR="${HOME}/.local/share/mime/packages"
 ICON_DIR="${HOME}/.local/share/icons/hicolor/128x128"
 MIMETYPE_ICON_DIR="${ICON_DIR}/mimetypes"
@@ -202,6 +203,15 @@ install_icons() {
     done
 }
 
+install_thunar_sendto() {
+    local src="$INSTALL_DIR/installer/thunar-sendto-kouprey.desktop"
+    mkdir -p "$THUNAR_SENDTO_DIR"
+    if [ -f "$src" ]; then
+        cp "$src" "$THUNAR_SENDTO_DIR/"
+        info "Thunar send-to installed: $THUNAR_SENDTO_DIR/thunar-sendto-kouprey.desktop"
+    fi
+}
+
 print_path_message() {
     if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
         local shell_rc
@@ -242,6 +252,9 @@ uninstall() {
 
     rm -f "$APPLICATIONS_DIR/kouprey-zip.desktop"
     info "Removed desktop entry"
+
+    rm -f "$THUNAR_SENDTO_DIR/thunar-sendto-kouprey.desktop"
+    info "Removed Thunar send-to entry"
 
     if [ -f "$MIME_DIR/application-x-kouprey-zip.xml" ]; then
         rm -f "$MIME_DIR/application-x-kouprey-zip.xml"
@@ -306,6 +319,7 @@ main() {
         install_desktop_file
         install_mime
         install_icons
+        install_thunar_sendto
         print_path_message
     fi
 
