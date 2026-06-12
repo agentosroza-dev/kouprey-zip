@@ -1,7 +1,7 @@
 {
   "app_name": "Kouprey-Zip",
   "app_desc": "A modern file archiver for Windows with WinUI 3-inspired design.",
-  "version": "Version 1.1",
+  "version": "Version 1.2",
   "ready": "Ready",
   "entries": "entries",
   "error": "Error",
@@ -128,5 +128,10 @@
 
   "save_preset": "Save Preset",
   "preset_saved": "Extraction preset saved.",
-  "save_complete": "Archive saved."
+  "save_complete": "Archive saved.",
+
+  "quick_compress_title": "Creating *.kpz...",
+  "quick_compress_output": "Output: {name}",
+  "quick_compress_cancel": "Cancel",
+  "quick_compress_error": "Compression failed: {message}"
 }

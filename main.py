@@ -16,6 +16,7 @@ from core.extractor import Extractor
 from core.language import LanguageManager
 from core.theme import ThemeManager
 from ui.main_window import MainWindow
+from ui.progress_dialog import QuickCompressDialog
 
 
 _DEBUG_LOG = os.path.join(tempfile.gettempdir(), "kouprey_zip_debug.log")
@@ -78,19 +79,15 @@ def _collect_ipc():
     return results
 
 
-def _quick_compress(paths: list[str]) -> None:
+def _quick_compress(paths: list[str], lang: LanguageManager) -> None:
     if not paths:
         print("No files specified.")
         sys.exit(1)
     name = os.path.splitext(os.path.basename(paths[0]))[0]
     output = os.path.join(os.path.dirname(paths[0]), f"{name}.kpz")
     compressor = Compressor(output, paths)
-    result = compressor.compress()
-    if result.success:
-        print(f"Created: {output}")
-    else:
-        print(f"Error: {result.message}")
-        sys.exit(1)
+    dialog = QuickCompressDialog(compressor, lang)
+    dialog.exec()
 
 
 def _quick_extract(archive: str, subdir: bool = False) -> None:
@@ -164,7 +161,7 @@ def main():
     _debug(f"args.extract: {args.extract}")
 
     if args.quick_compress:
-        _quick_compress(args.quick_compress)
+        _quick_compress(args.quick_compress, lang)
         return
     if args.quick_extract_here:
         _quick_extract(args.quick_extract_here, subdir=False)

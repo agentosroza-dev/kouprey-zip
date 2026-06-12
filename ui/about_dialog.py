@@ -62,7 +62,7 @@ class AboutDialog(QDialog):
         desc_label.setWordWrap(True)
         layout.addWidget(desc_label)
 
-        version_label = QLabel(self._lang.tr("version", "Version 1.1"))
+        version_label = QLabel(self._lang.tr("version", "Version 1.2"))
         version_label.setObjectName("captionLabel")
         version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(version_label)

@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
         footer_layout.setContentsMargins(16, 6, 16, 6)
         self._footer_left = QLabel("Create by Agentos")
         self._footer_left.setObjectName("footerLabel")
-        self._footer_right = QLabel("Copyright @ 2026 version 1.1")
+        self._footer_right = QLabel("Copyright @ 2026 version 1.2")
         self._footer_right.setObjectName("footerLabel")
         footer_layout.addWidget(self._footer_left)
         footer_layout.addStretch()
@@ -151,8 +151,8 @@ class MainWindow(QMainWindow):
         self._logo_label = QLabel()
         self._logo_label.setObjectName("appLogo")
         self._logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._logo_label.setMinimumHeight(72)
-        layout.addWidget(self._logo_label)
+        self._logo_label.setFixedSize(128, 128)
+        layout.addWidget(self._logo_label, 0, Qt.AlignmentFlag.AlignCenter)
 
         layout.addSpacing(16)
 
@@ -206,13 +206,12 @@ class MainWindow(QMainWindow):
             self._stack.addWidget(page)
 
     def _update_logo(self):
-        from core.theme import LIGHT
-        is_light = self._theme.colors == LIGHT
-        logo_file = "Kouprey Logo Variations white.png" if is_light else "Kouprey Logo Variations black.png"
-        logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "icons", logo_file)
-        pixmap = QPixmap(logo_path)
-        if not pixmap.isNull():
-            self._logo_label.setPixmap(pixmap.scaled(180, 64, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        ico_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "icons", "Kouprey Logo Variations.ico")
+        if os.path.isfile(ico_path):
+            icon = QIcon(ico_path)
+            pixmap = icon.pixmap(QSize(128, 128))
+            if not pixmap.isNull():
+                self._logo_label.setPixmap(pixmap.scaled(128, 128, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
 
     def _build_menu_bar(self):
         menubar = self.menuBar()

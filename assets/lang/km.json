@@ -1,7 +1,7 @@
 {
   "app_name": "Kouprey-Zip",
   "app_desc": "កម្មវិធីបង្រួមឯកសារទំនើបសម្រាប់ Windows រចនាបែប WinUI 3",
-  "version": "កំណែ 1.1",
+  "version": "កំណែ 1.2",
   "ready": "រួចរាល់",
   "entries": "ធាតុ",
   "error": "កំហុស",
@@ -128,5 +128,10 @@
 
   "save_preset": "រក្សាទុក Preset",
   "preset_saved": "Preset ទាញយកត្រូវបានរក្សាទុក។",
-  "save_complete": "Archive ត្រូវបានរក្សាទុក។"
+  "save_complete": "Archive ត្រូវបានរក្សាទុក។",
+
+  "quick_compress_title": "កំពុងបង្កើត *.kpz...",
+  "quick_compress_output": "លទ្ធផល៖ {name}",
+  "quick_compress_cancel": "បោះបង់",
+  "quick_compress_error": "ការបង្រួមបរាជ័យ៖ {message}"
 }

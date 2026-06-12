@@ -2,7 +2,7 @@
 ; Registers flat individual context menu verbs
 
 #define AppName "Kouprey-Zip"
-#define AppVersion "1.1"
+#define AppVersion "1.2"
 #define AppPublisher "Agentos"
 #define AppURL "https://github.com/kouprey-zip"
 #define AppExeName "Kouprey-Zip.exe"
