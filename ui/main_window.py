@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
 
 from core.icons import lucide_icon
 from core.language import LanguageManager
-from core.theme import ThemeManager
+from core.theme import LIGHT, ThemeManager
 from ui.archive_page import ArchivePage
 from ui.compress_page import CompressPage
 from ui.encrypt_page import EncryptPage
@@ -206,10 +206,11 @@ class MainWindow(QMainWindow):
             self._stack.addWidget(page)
 
     def _update_logo(self):
-        ico_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "icons", "Kouprey Logo Variations.ico")
-        if os.path.isfile(ico_path):
-            icon = QIcon(ico_path)
-            pixmap = icon.pixmap(QSize(128, 128))
+        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        logo_file = "Kouprey Logo Variations white.png" if self._theme.colors == LIGHT else "Kouprey Logo Variations black.png"
+        logo_path = os.path.join(base, "assets", "icons", logo_file)
+        if os.path.isfile(logo_path):
+            pixmap = QPixmap(logo_path)
             if not pixmap.isNull():
                 self._logo_label.setPixmap(pixmap.scaled(128, 128, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
 
