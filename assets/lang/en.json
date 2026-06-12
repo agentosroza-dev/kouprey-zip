@@ -1,6 +1,6 @@
 {
   "app_name": "Kouprey-Zip",
-  "app_desc": "A modern file archiver for Windows with WinUI 3-inspired design.",
+  "app_desc": "A modern file archiver with WinUI 3-inspired design.",
   "version": "Version 1.2",
   "ready": "Ready",
   "entries": "entries",
@@ -84,7 +84,7 @@
   "settings_general_desc": "Configure application behavior and preferences.",
   "settings_appearance": "Appearance",
   "settings_integration": "Integration",
-  "settings_integration_desc": "Integrate Kouprey-Zip into the Windows context menu.",
+  "settings_integration_desc": "Integrate Kouprey-Zip into the context menu.",
   "context_register": "Register",
   "context_unregister": "Unregister",
   "context_registered": "Context menu is registered.",

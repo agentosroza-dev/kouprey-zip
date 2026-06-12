@@ -55,7 +55,7 @@ class AboutDialog(QDialog):
         layout.addWidget(name_label)
 
         desc_label = QLabel(
-            self._lang.tr("app_desc", "A modern file archiver for Windows with WinUI 3-inspired design.")
+            self._lang.tr("app_desc", "A modern file archiver with WinUI 3-inspired design.")
         )
         desc_label.setObjectName("subtitleLabel")
         desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)

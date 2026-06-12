@@ -5,7 +5,7 @@ build-backend = "setuptools.backends._legacy:_Backend"
 [project]
 name = "kouprey-zip"
 version = "1.2"
-description = "A modern file archiver for Windows with WinUI 3-inspired design."
+description = "A modern file archiver with WinUI 3-inspired design."
 requires-python = ">=3.12"
 authors = [{ name = "Agentos" }]
 dependencies = [

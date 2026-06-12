@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Kouprey-Zip
+Comment=Modern file archiver — compress, extract, encrypt
+Exec=kouprey-zip %f
+Icon=kouprey-zip
+Terminal=false
+Type=Application
+Categories=Utility;Archiving;Compression;
+MimeType=application/x-kouprey-zip;
+StartupNotify=true

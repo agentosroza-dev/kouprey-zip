@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
 from core.icons import lucide_icon
 from core.language import LanguageManager
 from core.theme import ThemeManager
+from core.registry import is_registered, register_context_menu, unregister_context_menu
 
 
 class SettingsPage(QWidget):
@@ -179,7 +180,6 @@ class SettingsPage(QWidget):
         self._lang_btn.setIcon(lucide_icon("languages", 16))
 
     def _build_integration_page(self) -> QWidget:
-        from core.registry import is_registered
         page = QFrame()
         page.setObjectName("card")
         page_layout = QVBoxLayout(page)
@@ -210,7 +210,6 @@ class SettingsPage(QWidget):
         return page
 
     def _update_reg_status(self):
-        from core.registry import is_registered
         registered = is_registered()
         self._reg_status.setText(
             self._lang.tr("context_registered", "Context menu is registered.")
@@ -224,7 +223,6 @@ class SettingsPage(QWidget):
         )
 
     def _toggle_registration(self):
-        from core.registry import is_registered, register_context_menu, unregister_context_menu
         if is_registered():
             unregister_context_menu()
         else:
@@ -311,8 +309,8 @@ class SettingsPage(QWidget):
             )
             if len(integration_label) > 1:
                 integration_label[1].setText(
-                    self._lang.tr("settings_integration_desc",
-                                  "Integrate Kouprey-Zip into the Windows context menu.")
+self._lang.tr("settings_integration_desc",
+              "Integrate Kouprey-Zip into the context menu.")
                 )
         self._update_reg_status()
 

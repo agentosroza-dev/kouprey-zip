@@ -1,4 +1,5 @@
 import os
+import sys
 import tarfile
 import time
 import zipfile
@@ -6,10 +7,13 @@ import zipfile
 import py7zr
 import rarfile
 
-_UNRAR_PATHS = [
-    os.path.join(os.environ.get("PROGRAMFILES", "C:\\Program Files"), "WinRAR", "unrar.exe"),
-    os.path.join(os.environ.get("PROGRAMFILES(X86)", "C:\\Program Files (x86)"), "WinRAR", "unrar.exe"),
-]
+if sys.platform == "win32":
+    _UNRAR_PATHS = [
+        os.path.join(os.environ.get("PROGRAMFILES", "C:\\Program Files"), "WinRAR", "unrar.exe"),
+        os.path.join(os.environ.get("PROGRAMFILES(X86)", "C:\\Program Files (x86)"), "WinRAR", "unrar.exe"),
+    ]
+else:
+    _UNRAR_PATHS = []
 
 
 def _find_unrar() -> str | None:
@@ -171,7 +175,7 @@ class Archive:
             return entries
         except rarfile.RarCannotExec:
             raise RuntimeError(
-                "RAR extraction requires WinRAR or unrar.exe installed on your system."
+                "RAR extraction requires unrar installed on your system."
             )
 
     @property

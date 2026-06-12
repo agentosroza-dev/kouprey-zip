@@ -31,19 +31,19 @@ def _debug(msg):
         pass
 
 
+_SHARED_MEM = None
+
+
 def _is_first_instance() -> bool:
-    import ctypes
-    from ctypes import wintypes
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    kernel32.CreateMutexW.argtypes = [ctypes.c_void_p, wintypes.BOOL, wintypes.LPCWSTR]
-    kernel32.CreateMutexW.restype = wintypes.HANDLE
-    mutex = kernel32.CreateMutexW(None, False, "KoupreyZip_SingleInstance")
-    if not mutex:
-        _debug("CreateMutexW returned NULL, assuming first instance")
-        return True
-    is_first = ctypes.get_last_error() != 183
-    _debug(f"CreateMutexW: is_first={is_first}, last_error={ctypes.get_last_error()}")
-    return is_first
+    global _SHARED_MEM
+    from PyQt6.QtCore import QSharedMemory
+    _SHARED_MEM = QSharedMemory("KoupreyZip_SingleInstance")
+    if not _SHARED_MEM.create(1):
+        _debug("Another instance already running")
+        _SHARED_MEM = None
+        return False
+    _debug("First instance")
+    return True
 
 
 def _write_ipc(compress_paths, open_path, extract_path):

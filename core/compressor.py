@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import tarfile
 import zipfile
@@ -7,10 +8,13 @@ import py7zr
 
 from core.formats import ArchiveFormat
 
-_RAR_PATHS = [
-    os.path.join(os.environ.get("PROGRAMFILES", "C:\\Program Files"), "WinRAR", "rar.exe"),
-    os.path.join(os.environ.get("PROGRAMFILES(X86)", "C:\\Program Files (x86)"), "WinRAR", "rar.exe"),
-]
+if sys.platform == "win32":
+    _RAR_PATHS = [
+        os.path.join(os.environ.get("PROGRAMFILES", "C:\\Program Files"), "WinRAR", "rar.exe"),
+        os.path.join(os.environ.get("PROGRAMFILES(X86)", "C:\\Program Files (x86)"), "WinRAR", "rar.exe"),
+    ]
+else:
+    _RAR_PATHS = []
 
 
 def _find_rar() -> str | None:
@@ -108,7 +112,7 @@ class Compressor:
     def _compress_rar(self, progress_callback=None) -> None:
         rar_exe = _find_rar()
         if not rar_exe:
-            raise RuntimeError("RAR compression requires WinRAR installed on your system.")
+            raise RuntimeError("RAR compression requires rar installed on your system.")
         if os.path.exists(self.output_path):
             os.unlink(self.output_path)
         files = self._all_files()
