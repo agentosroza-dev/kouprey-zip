@@ -5,6 +5,16 @@ import os
 import sys
 import tempfile
 
+
+def _use_venv():
+    here = os.path.dirname(os.path.abspath(__file__))
+    venv_python = os.path.join(here, ".venv", "bin", "python")
+    if os.path.isfile(venv_python) and sys.executable != venv_python:
+        os.execv(venv_python, [venv_python, __file__] + sys.argv[1:])
+
+
+_use_venv()
+
 from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
