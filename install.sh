@@ -33,8 +33,147 @@ info()  { echo -e "${GREEN}[INFO]${NC}  $1"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC}  $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
+# ---- Distribution detection ----
+detect_pkg_manager() {
+    if command -v apt-get >/dev/null 2>&1; then
+        echo "apt"
+    elif command -v dnf >/dev/null 2>&1; then
+        echo "dnf"
+    elif command -v yum >/dev/null 2>&1; then
+        echo "yum"
+    elif command -v zypper >/dev/null 2>&1; then
+        echo "zypper"
+    elif command -v pacman >/dev/null 2>&1; then
+        echo "pacman"
+    elif command -v apk >/dev/null 2>&1; then
+        echo "apk"
+    elif command -v xbps-install >/dev/null 2>&1; then
+        echo "xbps"
+    elif command -v emerge >/dev/null 2>&1; then
+        echo "emerge"
+    elif command -v nix-env >/dev/null 2>&1; then
+        echo "nix"
+    elif command -v pkg >/dev/null 2>&1; then
+        echo "pkg"
+    else
+        echo "unknown"
+    fi
+}
+
+PKG_MANAGER="$(detect_pkg_manager)"
+
+pkg_install_cmd() {
+    case "$PKG_MANAGER" in
+        apt)   echo "sudo apt install" ;;
+        dnf)   echo "sudo dnf install" ;;
+        yum)   echo "sudo yum install" ;;
+        zypper) echo "sudo zypper install" ;;
+        pacman) echo "sudo pacman -S" ;;
+        apk)   echo "sudo apk add" ;;
+        xbps)  echo "sudo xbps-install" ;;
+        emerge) echo "sudo emerge" ;;
+        nix)   echo "nix-env -iA nixpkgs" ;;
+        pkg)   echo "sudo pkg install" ;;
+        *)     echo "" ;;
+    esac
+}
+
+pkg_search_cmd() {
+    case "$PKG_MANAGER" in
+        apt)   echo "dpkg -l" ;;
+        dnf|yum) echo "rpm -q" ;;
+        zypper) echo "rpm -q" ;;
+        pacman) echo "pacman -Qs" ;;
+        apk)   echo "apk info -e" ;;
+        xbps)  echo "xbps-query" ;;
+        emerge) echo "qlist -I" ;;
+        nix)   echo "nix-env -q" ;;
+        pkg)   echo "pkg info" ;;
+        *)     echo "" ;;
+    esac
+}
+
+pkg_venv_name() {
+    local pyver="$1"
+    case "$PKG_MANAGER" in
+        apt)   echo "python${pyver}-venv" ;;
+        dnf|yum) echo "python${pyver}-venv" ;;
+        zypper) echo "python${pyver}-venv" ;;
+        pacman) echo "python-virtualenv" ;;
+        apk)   echo "py3-virtualenv" ;;
+        xbps)  echo "python3-venv" ;;
+        emerge) echo "dev-python/virtualenv" ;;
+        nix)   echo "python3Full" ;;
+        pkg)   echo "py${pyver//./}-virtualenv" ;;
+        *)     echo "python${pyver}-venv" ;;
+    esac
+}
+
+pkg_qt_deps() {
+    case "$PKG_MANAGER" in
+        apt)   echo "libxcb-cursor0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0" ;;
+        dnf|yum) echo "libxcb-cursor libxcb xcb-util xcb-util-image xcb-util-keysyms xcb-util-wm" ;;
+        zypper) echo "libxcb-cursor0 libxcb-xinerama0" ;;
+        pacman) echo "libxcb-cursor xcb-util xcb-util-wm" ;;
+        apk)   echo "libxcb-dev libxcb-cursor-dev" ;;
+        xbps)  echo "libxcb-cursor" ;;
+        emerge) echo "x11-libs/libxcb" ;;
+        nix)   echo "libxcb" ;;
+        pkg)   echo "libxcb" ;;
+        *)     echo "libxcb-cursor0" ;;
+    esac
+}
+
+pkg_check_installed() {
+    local pkg="$1"
+    local cmd="$(pkg_search_cmd)"
+    [ -z "$cmd" ] && return 1
+    case "$PKG_MANAGER" in
+        apt)   $cmd "$pkg" >/dev/null 2>&1 ;;
+        dnf|yum) $cmd "$pkg" >/dev/null 2>&1 ;;
+        zypper) $cmd "$pkg" >/dev/null 2>&1 ;;
+        pacman) $cmd "$pkg" >/dev/null 2>&1 ;;
+        apk)   $cmd "$pkg" >/dev/null 2>&1 ;;
+        xbps)  $cmd "$pkg" >/dev/null 2>&1 ;;
+        emerge) $cmd "$pkg" >/dev/null 2>&1 ;;
+        nix)   $cmd "$pkg" >/dev/null 2>&1 ;;
+        pkg)   $cmd "$pkg" >/dev/null 2>&1 ;;
+        *)     return 1 ;;
+    esac
+}
+
+check_qt_deps() {
+    local missing=()
+    for pkg in $(pkg_qt_deps); do
+        if ! pkg_check_installed "$pkg"; then
+            missing+=("$pkg")
+        fi
+    done
+    if [ ${#missing[@]} -gt 0 ]; then
+        local install_cmd="$(pkg_install_cmd)"
+        if [ -n "$install_cmd" ]; then
+            warn "Missing Qt system dependencies: ${missing[*]}"
+            warn "  Install with: $install_cmd ${missing[*]}"
+        else
+            warn "Missing Qt system dependencies: ${missing[*]}"
+            warn "  Install the packages above using your distribution's package manager."
+        fi
+    fi
+}
+
 cleanup_installation() {
     rm -rf "$INSTALL_DIR"
+}
+
+_download() {
+    local url="$1" out="$2"
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL "$url" -o "$out"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q "$url" -O "$out"
+    else
+        error "No download tool found (install curl or wget)"
+    fi
 }
 
 install_from_release() {
@@ -42,7 +181,7 @@ install_from_release() {
     tmpdir="$(mktemp -d)"
 
     info "Downloading pre-built binary for ${ARCH}..."
-    if ! curl -fsSL "$RELEASE_URL" -o "$tmpdir/release.tar.gz" 2>/dev/null; then
+    if ! _download "$RELEASE_URL" "$tmpdir/release.tar.gz" 2>/dev/null; then
         rm -rf "$tmpdir"
         return 1
     fi
@@ -62,7 +201,20 @@ install_from_source() {
 
     command -v python3 >/dev/null 2>&1 || error "Python 3 is required (not found in PATH)"
     command -v git >/dev/null 2>&1     || error "git is required (not found in PATH)"
-    python3 -c "import venv" 2>/dev/null || error "Python venv module is required (install python3-venv)"
+    command -v curl >/dev/null 2>&1    || command -v wget >/dev/null 2>&1 || error "curl or wget is required (not found in PATH)"
+
+    local pyver pyvenv_pkg
+    pyver="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null || echo "3")"
+    pyvenv_pkg="$(pkg_venv_name "$pyver")"
+
+    if ! python3 -c "import venv" 2>/dev/null; then
+        local install_cmd="$(pkg_install_cmd)"
+        if [ -n "$install_cmd" ]; then
+            error "Python venv module is required.\n  Install it with: $install_cmd $pyvenv_pkg"
+        else
+            error "Python venv module is required.\n  Install the '$pyvenv_pkg' package using your distribution's package manager."
+        fi
+    fi
 
     if [ -d "$INSTALL_DIR/.git" ]; then
         info "Updating existing installation at $INSTALL_DIR"
@@ -74,24 +226,28 @@ install_from_source() {
 
     if [ ! -d "$INSTALL_DIR/venv" ]; then
         info "Creating Python virtual environment..."
-        python3 -m venv "$INSTALL_DIR/venv"
+        if python3 -m venv "$INSTALL_DIR/venv" 2>/dev/null; then
+            info "Virtual environment created"
+        else
+            info "Retrying venv creation without pip..."
+            rm -rf "$INSTALL_DIR/venv"
+            python3 -m venv --without-pip "$INSTALL_DIR/venv"
+            info "Installing pip manually..."
+            _download https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py
+            "$INSTALL_DIR/venv/bin/python" /tmp/get-pip.py
+        fi
     fi
+
+    if ! "$INSTALL_DIR/venv/bin/python" -m pip --version >/dev/null 2>&1; then
+        info "Installing pip in virtual environment..."
+        _download https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py
+        "$INSTALL_DIR/venv/bin/python" /tmp/get-pip.py
+    fi
+
     info "Installing Python dependencies..."
     "$INSTALL_DIR/venv/bin/pip" install --quiet -r "$INSTALL_DIR/requirements.txt"
 
-    local launcher="$BIN_DIR/kouprey-zip"
-    mkdir -p "$BIN_DIR"
-    cat > "$launcher" << 'LAUNCHER'
-#!/usr/bin/env bash
-DIR="$HOME/.local/share/kouprey-zip"
-if [ $# -eq 1 ] && [ "${1#--}" = "$1" ] && [ -e "$1" ]; then
-    exec "$DIR/venv/bin/python" "$DIR/main.py" --open "$1"
-else
-    exec "$DIR/venv/bin/python" "$DIR/main.py" "$@"
-fi
-LAUNCHER
-    chmod +x "$launcher"
-    info "Launcher installed: $launcher"
+    check_qt_deps
 }
 
 install_launcher() {
@@ -285,12 +441,18 @@ main() {
 
     if [ -d "$INSTALL_DIR" ]; then
         info "Existing installation found at $INSTALL_DIR"
-        # Try release update first, fall back to source update
+        _update_source() {
+            git -C "$INSTALL_DIR" pull --rebase 2>/dev/null || {
+                git -C "$INSTALL_DIR" fetch origin "$REPO_BRANCH" 2>/dev/null &&
+                git -C "$INSTALL_DIR" reset --hard "origin/$REPO_BRANCH" 2>/dev/null
+            } || true
+            "$INSTALL_DIR/venv/bin/pip" install --quiet -r "$INSTALL_DIR/requirements.txt" 2>/dev/null || true
+        }
         if [ -f "$INSTALL_DIR/Kouprey-Zip" ]; then
             # Previously installed from release; try release update
             local tmpdir
             tmpdir="$(mktemp -d)"
-            if curl -fsSL "$RELEASE_URL" -o "$tmpdir/release.tar.gz" 2>/dev/null; then
+            if _download "$RELEASE_URL" "$tmpdir/release.tar.gz" 2>/dev/null; then
                 info "Updating from pre-built binary..."
                 rm -rf "$INSTALL_DIR"
                 mkdir -p "$INSTALL_DIR"
@@ -301,15 +463,13 @@ main() {
             else
                 rm -rf "$tmpdir"
                 warn "Could not fetch release — updating from source instead."
-                git -C "$INSTALL_DIR" pull --rebase 2>/dev/null || git -C "$INSTALL_DIR" fetch origin "$REPO_BRANCH" && git -C "$INSTALL_DIR" reset --hard "origin/$REPO_BRANCH" 2>/dev/null || true
-                "$INSTALL_DIR/venv/bin/pip" install --quiet -r "$INSTALL_DIR/requirements.txt" 2>/dev/null || true
+                _update_source
             fi
         else
-            # Previously installed from source; update from source
             info "Updating from source..."
-            git -C "$INSTALL_DIR" pull --rebase 2>/dev/null || git -C "$INSTALL_DIR" fetch origin "$REPO_BRANCH" && git -C "$INSTALL_DIR" reset --hard "origin/$REPO_BRANCH" 2>/dev/null || true
-            "$INSTALL_DIR/venv/bin/pip" install --quiet -r "$INSTALL_DIR/requirements.txt" 2>/dev/null || true
+            _update_source
         fi
+        unset -f _update_source
     else
         info "Installing Kouprey-Zip..."
         if ! install_from_release; then

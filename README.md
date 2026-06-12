@@ -27,6 +27,7 @@ A modern file archiver with a WinUI 3-inspired design. Built with Python and PyQ
 | TAR.BZ2 | ✓ | ✓ | ✗ |
 | TAR.XZ | ✓ | ✓ | ✗ |
 | TAR.ZST | ✓ | ✓ | ✗ |
+| BZ2 | ✓ | ✓ | ✗ |
 | ISO | ✗ | ✓ | ✗ |
 
 ## Installation
@@ -46,6 +47,25 @@ The installer downloads the pre-built binary from the latest GitHub release. If 
 release is available for your architecture, it falls back to cloning from the
 `main-linux` branch and installing from source into a Python virtual environment.
 
+#### Supported distributions
+
+The installer auto-detects your distribution and provides distro-specific
+instructions for any missing system dependencies:
+
+| Distribution | Package manager | Qt dependency package(s) |
+|-------------|----------------|--------------------------|
+| Debian, Ubuntu, Zorin, Linux Mint, Pop!_OS | `apt` | `libxcb-cursor0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0` |
+| Fedora, RHEL, CentOS | `dnf` / `yum` | `libxcb-cursor libxcb xcb-util xcb-util-image xcb-util-keysyms xcb-util-wm` |
+| openSUSE | `zypper` | `libxcb-cursor0 libxcb-xinerama0` |
+| Arch Linux, Manjaro, EndeavourOS | `pacman` | `libxcb-cursor xcb-util xcb-util-wm` |
+| Alpine Linux | `apk` | `libxcb-dev libxcb-cursor-dev` |
+| Void Linux | `xbps-install` | `libxcb-cursor` |
+| Gentoo | `emerge` | `x11-libs/libxcb` |
+| NixOS | `nix-env` | `libxcb` |
+| FreeBSD | `pkg` | `libxcb` |
+
+#### Files installed
+
 | Step | Destination |
 |------|-------------|
 | Download pre-built binary | `~/.local/share/kouprey-zip/` |
@@ -53,12 +73,15 @@ release is available for your architecture, it falls back to cloning from the
 | Install `.desktop` entry | `~/.local/share/applications/kouprey-zip.desktop` |
 | Register `.kpz` MIME type | `~/.local/share/mime/packages/application-x-kouprey-zip.xml` |
 | Install app icons | `~/.local/share/icons/hicolor/*/*/` |
+| Thunar send-to entry | `~/.local/share/Thunar/sendto/thunar-sendto-kouprey.desktop` |
 
 #### Requirements
 
-- **curl** — for downloading the pre-built binary
+- **curl** or **wget** — for downloading
+- **Python 3.12+** (required if no pre-built binary is available)
+- **git** (required if no pre-built binary is available)
+- **`python3-venv`** — auto-detected; the installer suggests the correct package name for your distro (e.g. `python3.12-venv` on Debian/Ubuntu, `python-virtualenv` on Arch, `py3-virtualenv` on Alpine)
 - **`update-mime-database`** (`shared-mime-info` package) — optional, for `.kpz` file association
-- *Only for source fallback:* **Python 3.12+**, **git**, **python3-venv**
 
 #### After installation
 

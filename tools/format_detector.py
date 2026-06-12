@@ -5,7 +5,7 @@ MAGIC_MAP: dict[bytes, ArchiveFormat] = {
     b"PK\x03\x04": ArchiveFormat.ZIP,
     b"PK\x05\x06": ArchiveFormat.ZIP,
     b"PK\x07\x08": ArchiveFormat.ZIP,
-    b"37\x7a\xbc\xaf\x27\x1c": ArchiveFormat.SEVEN_ZIP,
+    b"\x37\x7a\xbc\xaf\x27\x1c": ArchiveFormat.SEVEN_ZIP,
     b"Rar!\x1a\x07": ArchiveFormat.RAR,
     b"\x1f\x8b": ArchiveFormat.GZIP,
     b"BZh": ArchiveFormat.BZIP2,

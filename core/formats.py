@@ -8,6 +8,7 @@ class ArchiveFormat(enum.Enum):
     TAR = (".tar", "application/x-tar")
     GZIP = (".tar.gz", "application/gzip")
     BZIP2 = (".tar.bz2", "application/x-bzip2")
+    BZ2 = (".bz2", "application/x-bzip2")
     XZ = (".tar.xz", "application/x-xz")
     ZSTD = (".tar.zst", "application/zstd")
     RAR = (".rar", "application/vnd.rar")
@@ -39,10 +40,18 @@ class ArchiveFormat(enum.Enum):
         for fmt in ArchiveFormat:
             if lower.endswith(fmt.extension):
                 return fmt
-        if lower.endswith(".gz") or lower.endswith(".tgz"):
+        if lower.endswith(".tgz"):
             return ArchiveFormat.GZIP
-        if lower.endswith(".bz2"):
+        if lower.endswith(".tbz2"):
             return ArchiveFormat.BZIP2
+        if lower.endswith(".txz"):
+            return ArchiveFormat.XZ
+        if lower.endswith(".tzst"):
+            return ArchiveFormat.ZSTD
+        if lower.endswith(".bz2"):
+            return ArchiveFormat.BZ2
+        if lower.endswith(".gz"):
+            return ArchiveFormat.GZIP
         if lower.endswith(".xz"):
             return ArchiveFormat.XZ
         if lower.endswith(".zst"):
@@ -53,8 +62,8 @@ class ArchiveFormat(enum.Enum):
 SUPPORTED_EXTRACT_FORMATS = [
     ArchiveFormat.KPZ, ArchiveFormat.SEVEN_ZIP, ArchiveFormat.ZIP,
     ArchiveFormat.TAR, ArchiveFormat.GZIP, ArchiveFormat.BZIP2,
-    ArchiveFormat.XZ, ArchiveFormat.ZSTD, ArchiveFormat.RAR,
-    ArchiveFormat.ISO,
+    ArchiveFormat.BZ2, ArchiveFormat.XZ, ArchiveFormat.ZSTD,
+    ArchiveFormat.RAR, ArchiveFormat.ISO,
 ]
 
 SUPPORTED_COMPRESS_FORMATS = [

@@ -8,6 +8,8 @@ def safe_filename(name: str) -> str:
 
 
 def human_readable_size(size_bytes: int) -> str:
+    if size_bytes < 0:
+        size_bytes = 0
     for unit in ("B", "KB", "MB", "GB", "TB"):
         if size_bytes < 1024:
             return f"{size_bytes:.1f} {unit}"

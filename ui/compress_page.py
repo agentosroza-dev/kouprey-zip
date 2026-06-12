@@ -154,7 +154,7 @@ class CompressPage(QWidget):
             self,
             self._lang.tr("save_archive_title", "Save Archive"),
             "",
-            "KPZ (*.kpz);;ZIP (*.zip);;7z (*.7z);;RAR (*.rar);;TAR (*.tar);;TarGZip (*.tar.gz);;BZip2 (*.tar.bz2);;XZ (*.tar.xz);;Zstd (*.tar.zst);;All Files (*.*)",
+            "KPZ (*.kpz);;ZIP (*.zip);;7z (*.7z);;RAR (*.rar);;TAR (*.tar);;TarGZip (*.tar.gz);;BZip2 (*.tar.bz2);;XZ (*.tar.xz);;Zstd (*.tar.zst);;All Files (*)",
         )
         if path:
             self._output_path.setText(path)

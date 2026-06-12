@@ -101,7 +101,7 @@ class ExtractPage(QWidget):
             self,
             self._lang.tr("open_archive_title", "Open Archive"),
             "",
-            "Archives (*.kpz *.7z *.zip *.rar *.tar *.tar.gz *.tar.bz2 *.tar.xz *.tar.zst *.iso);;All Files (*.*)",
+            "Archives (*.kpz *.7z *.zip *.rar *.tar *.tar.gz *.tar.bz2 *.tar.xz *.tar.zst *.bz2 *.tbz2 *.txz *.tzst *.iso);;All Files (*)",
         )
         if path:
             self._source_path.setText(path)

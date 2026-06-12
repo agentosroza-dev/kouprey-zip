@@ -3,7 +3,8 @@ import sys
 
 _ARCHIVE_EXTS = [
     ".kpz", ".zip", ".7z", ".rar",
-    ".tar", ".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".iso",
+    ".tar", ".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst",
+    ".bz2", ".tbz2", ".txz", ".tzst", ".iso",
 ]
 
 if sys.platform == "win32":

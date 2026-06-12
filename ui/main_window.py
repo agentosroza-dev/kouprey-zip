@@ -207,7 +207,7 @@ class MainWindow(QMainWindow):
 
     def _update_logo(self):
         base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        logo_file = "Kouprey Logo Variations white.png" if self._theme.colors == LIGHT else "Kouprey Logo Variations black.png"
+        logo_file = "Kouprey Logo Variations black.png" if self._theme.colors == LIGHT else "Kouprey Logo Variations white.png"
         logo_path = os.path.join(base, "assets", "icons", logo_file)
         if os.path.isfile(logo_path):
             pixmap = QPixmap(logo_path)

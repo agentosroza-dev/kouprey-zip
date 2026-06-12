@@ -150,6 +150,8 @@ class Compressor:
         return files
 
     def _common_base(self) -> str:
+        if not self.source_paths:
+            return ""
         if len(self.source_paths) == 1:
             return os.path.dirname(self.source_paths[0])
         common = os.path.commonpath(self.source_paths)

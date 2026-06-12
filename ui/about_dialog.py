@@ -36,7 +36,7 @@ class AboutDialog(QDialog):
 
         _base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         icons_dir = os.path.join(_base, "assets", "icons")
-        logo_file = "Kouprey Logo Variations white.png" if self._theme.colors == LIGHT else "Kouprey Logo Variations black.png"
+        logo_file = "Kouprey Logo Variations black.png" if self._theme.colors == LIGHT else "Kouprey Logo Variations white.png"
         logo_path = os.path.join(icons_dir, logo_file)
         icon_label = QLabel()
         pixmap = QPixmap(logo_path)
