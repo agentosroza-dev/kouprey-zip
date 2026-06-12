@@ -51,7 +51,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=[os.path.join(_ROOT, 'assets', 'app.ico')],
+    icon=[os.path.join(_ROOT, 'assets', 'icons', 'Kouprey Logo Variations.ico')],
 )
 coll = COLLECT(
     exe,

@@ -19,10 +19,10 @@ class WinUIColorTokens:
     text_secondary: str = "#616161"
     text_tertiary: str = "#8B8B8B"
     text_disabled: str = "#A0A0A0"
-    accent: str = "#005FB8"
-    accent_light: str = "#E0EFFA"
-    accent_hover: str = "#004A93"
-    accent_pressed: str = "#00376E"
+    accent: str = "#1A1A1A"
+    accent_light: str = "#E8E8E8"
+    accent_hover: str = "#333333"
+    accent_pressed: str = "#000000"
     border: str = "#E0E0E0"
     border_subtle: str = "#EFEFEF"
     border_input: str = "#C0C0C0"
@@ -34,14 +34,14 @@ class WinUIColorTokens:
     acrylic_background: str = "rgba(255, 255, 255, 0.85)"
     shadow: str = "rgba(0, 0, 0, 0.08)"
     shadow_elevated: str = "rgba(0, 0, 0, 0.14)"
-    tab_selected_bg: str = "#E0EFFA"
+    tab_selected_bg: str = "#E8E8E8"
     nav_hover_bg: str = "rgba(0, 0, 0, 0.04)"
     nav_pressed_bg: str = "rgba(0, 0, 0, 0.06)"
-    nav_selected_bg: str = "#E0EFFA"
+    nav_selected_bg: str = "#E8E8E8"
     progress_track: str = "#D9D9D9"
     scrollbar_thumb: str = "rgba(0, 0, 0, 0.15)"
     scrollbar_hover: str = "rgba(0, 0, 0, 0.25)"
-    info_bar_info: str = "#E0EFFA"
+    info_bar_info: str = "#E8E8E8"
     info_bar_success: str = "#DFF6DD"
     info_bar_warning: str = "#FFF4CE"
     info_bar_error: str = "#FDE7E9"
@@ -60,10 +60,10 @@ class DarkWinUIColorTokens:
     text_secondary: str = "#ABABAB"
     text_tertiary: str = "#8B8B8B"
     text_disabled: str = "#6F6F6F"
-    accent: str = "#60CDFF"
-    accent_light: str = "#1A3A4A"
-    accent_hover: str = "#7FD8FF"
-    accent_pressed: str = "#A0E4FF"
+    accent: str = "#F2F2F2"
+    accent_light: str = "#3A3A3A"
+    accent_hover: str = "#D0D0D0"
+    accent_pressed: str = "#FFFFFF"
     border: str = "#454545"
     border_subtle: str = "#383838"
     border_input: str = "#555555"
@@ -75,14 +75,14 @@ class DarkWinUIColorTokens:
     acrylic_background: str = "rgba(44, 44, 44, 0.85)"
     shadow: str = "rgba(0, 0, 0, 0.32)"
     shadow_elevated: str = "rgba(0, 0, 0, 0.48)"
-    tab_selected_bg: str = "#1A3A4A"
+    tab_selected_bg: str = "#3A3A3A"
     nav_hover_bg: str = "rgba(255, 255, 255, 0.06)"
     nav_pressed_bg: str = "rgba(255, 255, 255, 0.08)"
-    nav_selected_bg: str = "#1A3A4A"
+    nav_selected_bg: str = "#3A3A3A"
     progress_track: str = "#505050"
     scrollbar_thumb: str = "rgba(255, 255, 255, 0.15)"
     scrollbar_hover: str = "rgba(255, 255, 255, 0.25)"
-    info_bar_info: str = "#1A3A4A"
+    info_bar_info: str = "#3A3A3A"
     info_bar_success: str = "#1A3A1A"
     info_bar_warning: str = "#3A3A1A"
     info_bar_error: str = "#3A1A1A"
@@ -137,6 +137,7 @@ class ThemeManager:
 
 
 def build_winui_stylesheet(c: WinUIColorTokens | DarkWinUIColorTokens) -> str:
+    nav_bg = "#000000" if isinstance(c, DarkWinUIColorTokens) else "#FFFFFF"
     return f"""
 QMainWindow {{
     background-color: {c.mica_background};
@@ -588,7 +589,7 @@ QFrame#card {{
 }}
 
 QFrame#navPanel {{
-    background: {c.surface_alt};
+    background: {nav_bg};
     border: none;
     border-right: 1px solid {c.border};
 }}

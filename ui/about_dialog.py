@@ -25,7 +25,7 @@ class AboutDialog(QDialog):
     def _setup_ui(self):
         self.setWindowTitle(self._lang.tr("about_title", "About Kouprey-Zip"))
         self.setFixedSize(480, 360)
-        _icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "app.ico")
+        _icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "icons", "Kouprey Logo Variations.ico")
         if os.path.isfile(_icon_path):
             self.setWindowIcon(QIcon(_icon_path))
 
@@ -36,7 +36,7 @@ class AboutDialog(QDialog):
 
         _base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         icons_dir = os.path.join(_base, "assets", "icons")
-        logo_file = "KoupreyTransparancy.png" if self._theme.colors == LIGHT else "Kouprey_Transparancy-White.png"
+        logo_file = "Kouprey Logo Variations white.png" if self._theme.colors == LIGHT else "Kouprey Logo Variations black.png"
         logo_path = os.path.join(icons_dir, logo_file)
         icon_label = QLabel()
         pixmap = QPixmap(logo_path)

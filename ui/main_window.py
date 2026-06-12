@@ -1,7 +1,7 @@
 import os
 
 from PyQt6.QtCore import QSize, QTimer, Qt
-from PyQt6.QtGui import QAction, QFont, QIcon
+from PyQt6.QtGui import QAction, QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QApplication, QFrame, QHBoxLayout, QLabel, QMainWindow,
     QPushButton, QStackedWidget, QStatusBar, QToolBar,
@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
     def _setup_ui(self):
         self.setMinimumSize(900, 600)
         self.resize(1100, 720)
-        _icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "app.ico")
+        _icon_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "icons", "Kouprey Logo Variations.ico")
         if os.path.isfile(_icon_path):
             self.setWindowIcon(QIcon(_icon_path))
 
@@ -99,6 +99,7 @@ class MainWindow(QMainWindow):
         root_layout.setSpacing(0)
 
         self._nav_panel = self._build_nav_panel()
+        self._update_logo()
         root_layout.addWidget(self._nav_panel)
 
         right_area = QWidget()
@@ -109,7 +110,7 @@ class MainWindow(QMainWindow):
         self._command_bar = QToolBar()
         self._command_bar.setObjectName("commandBar")
         self._command_bar.setMovable(False)
-        self._command_bar.setIconSize(QSize(18, 18))
+        self._command_bar.setIconSize(QSize(36, 36))
         right_layout.addWidget(self._command_bar)
 
         self._page_title = QLabel()
@@ -147,14 +148,11 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(8, 12, 8, 12)
         layout.setSpacing(2)
 
-        logo_label = QLabel("Kouprey-Zip")
-        logo_label.setObjectName("appLogo")
-        logo_font = QFont()
-        logo_font.setFamilies(["AgentosUI", "Segoe UI Variable Display", "Segoe UI", "sans-serif"])
-        logo_font.setPointSize(16)
-        logo_font.setWeight(QFont.Weight.DemiBold)
-        logo_label.setFont(logo_font)
-        layout.addWidget(logo_label)
+        self._logo_label = QLabel()
+        self._logo_label.setObjectName("appLogo")
+        self._logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._logo_label.setMinimumHeight(72)
+        layout.addWidget(self._logo_label)
 
         layout.addSpacing(16)
 
@@ -206,6 +204,15 @@ class MainWindow(QMainWindow):
         }
         for page in self._pages.values():
             self._stack.addWidget(page)
+
+    def _update_logo(self):
+        from core.theme import LIGHT
+        is_light = self._theme.colors == LIGHT
+        logo_file = "Kouprey Logo Variations white.png" if is_light else "Kouprey Logo Variations black.png"
+        logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "icons", logo_file)
+        pixmap = QPixmap(logo_path)
+        if not pixmap.isNull():
+            self._logo_label.setPixmap(pixmap.scaled(180, 64, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
 
     def _build_menu_bar(self):
         menubar = self.menuBar()
@@ -288,6 +295,7 @@ class MainWindow(QMainWindow):
             btn._update_display()
         self._lang_btn.setIcon(lucide_icon("languages", 18))
         self._update_theme_btn_text()
+        self._update_logo()
         self._command_bar.clear()
         page = self._stack.currentWidget()
         if page and hasattr(page, "populate_toolbar"):

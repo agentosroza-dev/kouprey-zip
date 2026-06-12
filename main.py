@@ -144,7 +144,7 @@ def main():
 
     load_env()
     app = QApplication(sys.argv)
-    _icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "app.ico")
+    _icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "icons", "Kouprey Logo Variations.ico")
     if os.path.isfile(_icon_path):
         app.setWindowIcon(QIcon(_icon_path))
     args = parse_args()
